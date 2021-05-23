@@ -1,3 +1,5 @@
+from .upload import change_album_cover
+
 
 class POSITION:
     """
@@ -530,6 +532,8 @@ class Album:
             ).execute()
             page_token = result.get("nextPageToken", None)
             curr_list = result.get("albums")
+            if curr_list is None:
+                break
             for album in curr_list:
                 yield album
 
@@ -625,3 +629,6 @@ class Album:
         {}
         """
         return self._service.albums().unshare(albumId=id).execute()
+
+    def change_cover(self, album_id, cover_id):
+        change_album_cover(self._secrets, album_id, cover_id)

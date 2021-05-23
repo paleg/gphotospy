@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from gphotospy.utils import batches
 
 from .album import set_position, POSITION
-from .upload import upload
+from .upload import upload, change_description
 
 
 class Val:
@@ -609,6 +609,9 @@ class Media:
         self._staged_media.append(new_media)
         return new_media
 
+    def set_description(self, media_id, description):
+        change_description(self._secrets, media_id, description)
+
     # API ENDPOINTS
 
     def batchCreate(self,
@@ -785,6 +788,8 @@ class Media:
             ).execute()
             page_token = result.get("nextPageToken", None)
             curr_list = result.get("mediaItems")
+            if curr_list is None:
+                break
             for media in curr_list:
                 yield media
 
@@ -956,5 +961,7 @@ class Media:
                 body=request_body).execute()
             page_token = result.get("nextPageToken", None)
             curr_list = result.get("mediaItems")
+            if curr_list is None:
+                break
             for media in curr_list:
                 yield media

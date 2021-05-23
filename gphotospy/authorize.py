@@ -12,7 +12,8 @@ version = "v1"
 token_file = f'{service_name}_{version}.token'
 scopes_arr = [
     'https://www.googleapis.com/auth/photoslibrary',
-    'https://www.googleapis.com/auth/photoslibrary.sharing'
+    'https://www.googleapis.com/auth/photoslibrary.sharing',
+    'https://www.googleapis.com/auth/photoslibrary.edit.appcreateddata'
 ]
 
 
@@ -57,7 +58,7 @@ def init(secrets):
         "secrets": secrets
     }
     try:
-        service = build(service_name, version,  static_discovery=False, credentials=credentials)
+        service = build(service_name, version,  static_discovery=False, credentials=credentials, cache_discovery=False)
         logging.debug('service created successfully: {}'.format(service_name))
         service_object["service"] = service
         return service_object

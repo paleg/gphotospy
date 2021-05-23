@@ -39,3 +39,41 @@ def upload(secrets, media_file):
     if response.ok:
         return response.content.decode('utf-8')
     return None
+
+
+def change_description(secrets, media_id, description):
+    credentials = get_credentials(secrets)
+
+    header = {
+        'Authorization': "Bearer " + credentials.token,
+        'Content-type': 'application/octet-stream',
+        'X-Goog-Upload-Protocol': 'raw'
+    }
+
+    response = requests.patch(
+            f"https://photoslibrary.googleapis.com/v1/mediaItems/{media_id}?updateMask=description",
+            json={'description': description},
+            headers=header
+    )
+    if response.ok:
+        return response.content.decode('utf-8')
+    return None
+
+
+def change_album_cover(secrets, album_id, cover_id):
+    credentials = get_credentials(secrets)
+
+    header = {
+        'Authorization': "Bearer " + credentials.token,
+        'Content-type': 'application/octet-stream',
+        'X-Goog-Upload-Protocol': 'raw'
+    }
+
+    response = requests.patch(
+            f"https://photoslibrary.googleapis.com/v1/albums/{album_id}?updateMask=coverPhotoMediaItemId",
+            json={'coverPhotoMediaItemId': cover_id},
+            headers=header
+    )
+    if response.ok:
+        return response.content.decode('utf-8')
+    return None
