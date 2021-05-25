@@ -609,6 +609,10 @@ class Media:
         self._staged_media.append(new_media)
         return new_media
 
+    @property
+    def staged_media_len(self):
+        return len(self._staged_media)
+
     def set_description(self, media_id, description):
         change_description(self._secrets, media_id, description)
 
