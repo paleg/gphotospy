@@ -1,7 +1,11 @@
 import os
 import requests
 import mimetypes
+import tenacity
+
+
 from .authorize import get_credentials
+
 
 upload_url = 'https://photoslibrary.googleapis.com/v1/uploads'
 mimetypes.init()
@@ -41,6 +45,7 @@ def upload(secrets, media_file):
     return None
 
 
+@tenacity.retry(wait=tenacity.wait_exponential(multiplier=3, min=10, max=60))
 def change_description(secrets, media_id, description):
     credentials = get_credentials(secrets)
 
@@ -55,11 +60,11 @@ def change_description(secrets, media_id, description):
             json={'description': description},
             headers=header
     )
-    if response.ok:
-        return response.content.decode('utf-8')
-    return None
+    response.raise_for_status()
+    return response.content.decode('utf-8')
 
 
+@tenacity.retry(wait=tenacity.wait_exponential(multiplier=3, min=10, max=60))
 def change_album_cover(secrets, album_id, cover_id):
     credentials = get_credentials(secrets)
 
@@ -74,6 +79,5 @@ def change_album_cover(secrets, album_id, cover_id):
             json={'coverPhotoMediaItemId': cover_id},
             headers=header
     )
-    if response.ok:
-        return response.content.decode('utf-8')
-    return None
+    response.raise_for_status()
+    return response.content.decode('utf-8')
